@@ -2,7 +2,7 @@ use clap::Parser;
 use log;
 
 mod encode;
-use crate::encode::{encode_files};
+use crate::encode::run_encoder;
 
 
 #[derive(Parser, Debug)]
@@ -23,5 +23,5 @@ fn main() {
     let args = Args::parse();
 
     log::debug!("files: {:?} - jobs: {:?}", args.files, args.jobs);
-    encode_files(args.files);
+    run_encoder(args.files, args.jobs).unwrap();
 }

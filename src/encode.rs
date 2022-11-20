@@ -1,10 +1,11 @@
 use log;
-use std::fs::{File, remove_file};
+use std::fs::File;
+use std::error::Error;
 use std::str;
-use std::io::{BufRead, BufReader, Write};
+use std::io::{self, BufRead, BufReader, Write};
 
 
-pub fn merge_encodings(input: Vec<Vec<u8>>) -> Vec<u8> {
+fn merge_encodings(input: Vec<Vec<u8>>) -> Vec<u8> {
     let mut output = Vec::new();
 
     for mut enc in input {
@@ -27,13 +28,13 @@ pub fn merge_encodings(input: Vec<Vec<u8>>) -> Vec<u8> {
         output.append(&mut enc);
     }
 
-    log::debug!("{:?}", &output);
     return output
 }
 
 
-pub fn encode_files(files: Vec<String>) -> Vec<u8> {
-    const BUFFER_SIZE: usize = 1024;
+fn encode_files(files: Vec<String>) -> Vec<u8> {
+    const BUFFER_SIZE: usize = 4096;
+
     let mut output: Vec<Vec<u8>> = Vec::new();
 
     for file in files {
@@ -50,7 +51,7 @@ pub fn encode_files(files: Vec<String>) -> Vec<u8> {
     return merge_encodings(output);
 }
 
-pub fn encode_str(input: &str) -> Vec<u8> {
+fn encode_str(input: &str) -> Vec<u8> {
     let mut output: Vec<u8> = Vec::new();
     let mut prevchar: char  = input.chars().nth(0).unwrap();
     let mut charcount: u8   = 0;
@@ -75,9 +76,23 @@ pub fn encode_str(input: &str) -> Vec<u8> {
     return output;
 }
 
+pub fn run_encoder(files: Vec<String>, jobs: u8) -> Result<(), Box<dyn Error>> {
+    if jobs == 1 {
+        let enc: Vec<u8> = encode_files(files);
+        log::trace!("{:?}", &enc);
+
+        io::stdout().write(&enc).unwrap();
+        Ok(())
+    }
+    else {
+        Ok(())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs::remove_file;
 
     #[test]
     fn test_encode_str() {
