@@ -2,7 +2,7 @@ use clap::Parser;
 use log;
 
 mod encode;
-use crate::encode::encode_str;
+use crate::encode::{encode_files};
 
 
 #[derive(Parser, Debug)]
@@ -10,7 +10,7 @@ use crate::encode::encode_str;
 struct Args {
     /// list of files to parse
     #[arg(required = true)]
-    file: Vec<String>,
+    files: Vec<String>,
 
     /// number of threads to create
     #[arg(short, long, default_value_t = 1)]
@@ -22,6 +22,6 @@ fn main() {
     env_logger::init();
     let args = Args::parse();
 
-    log::debug!("files: {:?} - jobs: {:?}", args.file, args.jobs);
-    encode_str("aaa");
+    log::debug!("files: {:?} - jobs: {:?}", args.files, args.jobs);
+    encode_files(args.files);
 }
