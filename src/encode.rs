@@ -43,9 +43,8 @@ fn threaded_encode_files(files: Vec<String>, jobs: u8) -> Vec<u8> {
     let mut output: Vec<Vec<u8>> = Vec::new();
 
     for file in files {
-        let file       = File::open(file).unwrap();
+        let file = File::open(file).unwrap();
         let mmap = unsafe { MmapOptions::new().map(&file).unwrap() };
-
 
         log::debug!("mmap: {:?}", &mmap.len());
 
@@ -70,7 +69,7 @@ fn encode_files(files: Vec<String>) -> Vec<u8> {
     let mut output: Vec<Vec<u8>> = Vec::new();
 
     for file in files {
-        let file       = File::open(file).unwrap();
+        let file = File::open(file).unwrap();
         let mmap = unsafe { MmapOptions::new().map(&file).unwrap() };
 
         output.push(encode_mmap(&mmap, 0, mmap.len()));
@@ -82,6 +81,7 @@ fn encode_files(files: Vec<String>) -> Vec<u8> {
 fn encode_mmap(input: &Mmap, from: usize, to: usize) -> Vec<u8> {
     let mut to = to;
     if to > input.len() { to = input.len(); }
+
     log::trace!("from-to: {:?}", &input[from..to]);
 
     let mut output: Vec<u8> = Vec::new();
